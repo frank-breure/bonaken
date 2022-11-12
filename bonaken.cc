@@ -1,0 +1,210 @@
+#include <stdio.h>
+#include <time.h>
+
+#include <algorithm>
+
+#include "bonaken.h"
+#include "random.h"
+
+
+const std::vector<soort_e>	Soorten(void)
+{
+	static std::vector<soort_e> soorten =
+	{
+		Schoppen,
+		Harten,
+		Klaveren,
+		Ruiten,
+	};
+	return soorten;
+}
+
+char const * strSoort(soort_e soort)
+{
+	static char const * soorten[] =
+	{
+		"Sch",
+		"Har",
+		"Kla",
+		"Rui",
+	};
+	return soorten[soort];
+}
+
+char const * strWaarde(const waarde_e waarde)
+{
+	static char const * waardes[] =
+	{
+		"7 ",
+		"8 ",
+		"9 ",
+		"10",
+		"B ",
+		"V ",
+		"H ",
+		"A ",
+	};
+	return waardes[waarde];
+}
+
+int	Punten(kaart_t kaart)
+{
+	static int gewoon[] =
+	{
+		0,
+		0,
+		0,
+		10,
+		1,
+		2,
+		3,
+		11,
+	};
+	return gewoon[kaart.waarde];
+}
+
+int TroefPunten(soort_e troef, kaart_t kaart)
+{
+	static int troeven[] =
+	{
+		0, 
+		0,
+		14,
+		10,
+		20,
+		2,
+		3,
+		11,
+	};
+	if (kaart.soort == troef)
+	{
+		return troeven[kaart.waarde];
+	}
+	return 0;
+}
+
+int TotaalTroefPunten(soort_e troef, kaarten_t hand)
+{
+	int totaal = 0;
+
+	for (auto kaart: hand)
+	{
+		totaal += TroefPunten(troef, kaart);
+	}
+	return totaal;
+}
+
+char const * strKaart(const kaart_t kaart)
+{
+	static char buf[10];
+
+	sprintf(buf, "%s-%s", strSoort(kaart.soort), strWaarde(kaart.waarde));
+	return buf;
+}
+
+kaarten_t Spel(void)
+{
+	kaarten_t spel;
+	std::vector<soort_e> soorten = { Schoppen, Harten, Klaveren, Ruiten };
+	std::vector<waarde_e> waardes = { Zeven, Acht, Negen, Tien, Boer, Vrouw, Heer, Aas };
+
+	for (auto & soort : soorten) 
+	{
+		for (auto & waarde : waardes)
+		{
+			kaart_t kaart = { soort, waarde };
+			spel.push_back(kaart);
+		}
+	}
+	return spel;
+}
+
+static bool deel(const kaarten_t & spel, std::vector<int> & geschud, int aantal, kaarten_t & aan)
+{
+	if ((size_t) aantal > geschud.size())
+	{
+		return false;
+	}
+	for (int i = 0; i < aantal; i ++)
+	{
+		aan.push_back(spel[geschud[0]]);
+		geschud.erase(geschud.begin());
+	}
+	return true;
+}
+
+potje_t	Deel(void)
+{
+	potje_t		pot;
+	kaarten_t	spel = Spel();
+
+	struct timespec tp;
+	clock_gettime(CLOCK_TAI, &tp);
+	unsigned seed = (unsigned) tp.tv_nsec;
+	printf("seed=%08x\n", seed);
+
+	std::vector<int>	geschud = random_unique(seed, 32, 32);
+	
+	for (int i = 0; i < 2; i ++)
+	{
+		deel(spel, geschud, 3, pot.noord);
+		deel(spel, geschud, 3, pot.oost);
+		deel(spel, geschud, 3, pot.zuid);
+		deel(spel, geschud, 3, pot.west);
+		if (i == 0)
+		{
+			deel(spel, geschud, 2, pot.open);
+		}
+	}
+	deel(spel, geschud, 1, pot.dicht);
+	deel(spel, geschud, 5, pot.slapers);
+	return pot;
+}
+
+inline bool operator< (const kaart_t & lhs, const kaart_t & rhs) 
+{
+	if (lhs.soort == rhs.soort)
+	{
+		return lhs.waarde < rhs.waarde;
+	}
+	return lhs.soort < rhs.soort;
+}
+
+void printHand(const kaarten_t & hand)
+{
+	kaarten_t	volgorde = hand;
+	int			punten = 0;
+
+	std::sort(volgorde.begin(), volgorde.end());
+	for (auto kaart: volgorde)
+	{
+		printf("%s ", strKaart(kaart));
+		punten += Punten(kaart);
+	}
+	printf(" [%2d] ", punten);
+	for (auto troef: Soorten())
+	{
+		printf("[%s %2d] ", strSoort(troef), TotaalTroefPunten(troef, hand));
+	}
+	printf("\n");
+}
+
+void printPot(const potje_t & potje)
+{
+	printf("\n");
+	printf("Noord: ");
+	printHand(potje.noord);
+	printf("Oost : ");
+	printHand(potje.oost);
+	printf("Zuid : ");
+	printHand(potje.zuid);
+	printf("West : ");
+	printHand(potje.west);
+	printf("Open : ");
+	printHand(potje.open);
+	printf("Dicht: ");
+	printHand(potje.dicht);
+	printf("Slaap: ");
+	printHand(potje.slapers);
+	printf("\n");
+}
