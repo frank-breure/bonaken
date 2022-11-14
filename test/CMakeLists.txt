@@ -9,7 +9,7 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.11.0
+  GIT_TAG        release-1.12.0
 )
 FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
@@ -20,7 +20,19 @@ list(APPEND test_sources
 	test_random.cc
 	)
 
+include(GoogleTest)
+
 add_executable(${PROJECT_NAME} ${test_sources})
+
+gtest_add_tests(
+	TARGET      ${PROJECT_NAME}
+    TEST_SUFFIX .noArgs
+    TEST_LIST   noArgsTests
+	)
+
+gtest_discover_tests(${PROJECT_NAME} 
+	XML_OUTPUT_DIR "${CMAKE_BINARY_DIR}"
+	)
 
 target_compile_options(${PROJECT_NAME}
 	PRIVATE
