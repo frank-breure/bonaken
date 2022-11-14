@@ -46,7 +46,7 @@ typedef struct
 	kaarten_t	slapers;
 }	potje_t;
 
-potje_t	Deel(void);
+potje_t	Deel(unsigned seed = 0);
 
 void printHand(const kaarten_t & hand);
 void printPot(const potje_t & potje);

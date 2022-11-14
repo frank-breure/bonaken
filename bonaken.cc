@@ -132,18 +132,21 @@ static bool deel(const kaarten_t & spel, intvector_t & geschud, int aantal, kaar
 	return true;
 }
 
-potje_t	Deel(void)
+potje_t	Deel(unsigned seed)
 {
 	potje_t		pot;
 	kaarten_t	spel = Spel();
 
-	struct timespec tp;
-	clock_gettime(CLOCK_TAI, &tp);
-	unsigned seed = (unsigned) tp.tv_nsec;
+	if (seed == 0)
+	{
+		struct timespec tp;
+		clock_gettime(CLOCK_TAI, &tp);
+		seed = (unsigned) tp.tv_nsec;
+	}
 	printf("seed=%08x\n", seed);
 
 	intvector_t	geschud = random_unique(seed, 32, 32);
-	
+
 	for (int i = 0; i < 2; i ++)
 	{
 		deel(spel, geschud, 3, pot.noord);
