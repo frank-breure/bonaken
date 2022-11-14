@@ -8,9 +8,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(COMMON_COMPILE_C_OPTIONS
-	$<$<OR:$<C_COMPILER_ID:Clang>,$<C_COMPILER_ID:AppleClang>,$<C_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic -Werror -fPIC>
-	$<$<C_COMPILER_ID:MSVC>:/Wall /WX /wd4113 /wd4255 /wd4668 /wd4710 /wd4711 /wd4820 /wd5045>
+set(COMMON_COMPILE_CXX_OPTIONS
+	$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Wall -Wextra -Wpedantic -Werror -fPIC>
+	$<$<CXX_COMPILER_ID:MSVC>:/Wall /WX /wd4113 /wd4255 /wd4668 /wd4710 /wd4711 /wd4820 /wd5045>
 	)
 
 list(APPEND sources
@@ -34,7 +34,7 @@ add_executable(${PROGRAM} ${main_sources})
 
 target_compile_options(${PROGRAM}
 	PRIVATE
-		${COMMON_COMPILE_C_OPTIONS}
+		${COMMON_COMPILE_CXX_OPTIONS}
 	)
 
 target_include_directories(${PROGRAM}

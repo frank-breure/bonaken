@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -36,7 +37,7 @@ gtest_discover_tests(${PROJECT_NAME}
 
 target_compile_options(${PROJECT_NAME}
 	PRIVATE
-		${COMMON_COMPILE_C_OPTIONS}
+		${COMMON_COMPILE_CXX_OPTIONS}
 	)
 
 target_include_directories(${PROJECT_NAME}
