@@ -25,5 +25,25 @@ target_compile_options(${PROJECT_NAME}
 		${COMMON_COMPILE_C_OPTIONS}
 	)
 
+set(PROGRAM "bonaak")
+list(APPEND main_sources
+	bonaak.cc
+	)
+
+add_executable(${PROGRAM} ${main_sources})
+
+target_compile_options(${PROGRAM}
+	PRIVATE
+		${COMMON_COMPILE_C_OPTIONS}
+	)
+
+target_include_directories(${PROGRAM}
+	PRIVATE
+		..)
+
+target_link_libraries(${PROGRAM}
+	PRIVATE
+		bonaken)
+
 enable_testing()
 add_subdirectory(test)

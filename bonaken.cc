@@ -6,7 +6,6 @@
 #include "bonaken.h"
 #include "random.h"
 
-
 const std::vector<soort_e>	Soorten(void)
 {
 	static std::vector<soort_e> soorten =
@@ -119,7 +118,7 @@ kaarten_t Spel(void)
 	return spel;
 }
 
-static bool deel(const kaarten_t & spel, std::vector<int> & geschud, int aantal, kaarten_t & aan)
+static bool deel(const kaarten_t & spel, intvector_t & geschud, int aantal, kaarten_t & aan)
 {
 	if ((size_t) aantal > geschud.size())
 	{
@@ -143,7 +142,7 @@ potje_t	Deel(void)
 	unsigned seed = (unsigned) tp.tv_nsec;
 	printf("seed=%08x\n", seed);
 
-	std::vector<int>	geschud = random_unique(seed, 32, 32);
+	intvector_t	geschud = random_unique(seed, 32, 32);
 	
 	for (int i = 0; i < 2; i ++)
 	{
@@ -181,10 +180,19 @@ void printHand(const kaarten_t & hand)
 		printf("%s ", strKaart(kaart));
 		punten += Punten(kaart);
 	}
+	for (int i = 7 * hand.size(); i < 7 * 6; i ++)
+	{
+		putc(' ', stdout);
+	}
 	printf(" [%2d] ", punten);
 	for (auto troef: Soorten())
 	{
 		printf("[%s %2d] ", strSoort(troef), TotaalTroefPunten(troef, hand));
+	}
+	int roem = vindRoem(hand);
+	if (roem)
+	{
+		printf(" roem: %d", roem);
 	}
 	printf("\n");
 }
@@ -207,4 +215,70 @@ void printPot(const potje_t & potje)
 	printf("Slaap: ");
 	printHand(potje.slapers);
 	printf("\n");
+}
+
+inline bool sorteerOpWaarde(const kaart_t & lhs, const kaart_t & rhs) 
+{
+	return lhs.waarde < rhs.waarde;
+}
+
+int vindVierkaart(const kaarten_t & hand)
+{
+	kaarten_t	handOpWaarde = hand;
+
+	// Sorteer de hand alleen op waarde, niet op soort.
+	std::sort(handOpWaarde.begin(), handOpWaarde.end(), sorteerOpWaarde);
+	
+	for (int i = 0; i < (int) handOpWaarde.size() - 3; i  ++)
+	{
+		if (handOpWaarde[i].waarde == handOpWaarde[i + 1].waarde && 
+			handOpWaarde[i].waarde == handOpWaarde[i + 2].waarde && handOpWaarde[i].waarde == handOpWaarde[i + 3].waarde &&
+			handOpWaarde[i].waarde >= Boer)
+		{
+			return (handOpWaarde[i].waarde == Boer) ? 200 : 100;
+		}
+	}
+	return 0;
+}
+
+int	vindRoem(const kaarten_t & hand)
+{
+	int	roem = 0;
+	for (int i = 0; i < (int) hand.size() - 2; i  ++)
+	{
+		// Is dit een driekaart?
+		if (hand[i].soort == hand[i + 1].soort && hand[i].soort == hand[i + 2].soort &&
+			(hand[i].waarde + 1) == hand[i + 1].waarde && (hand[i].waarde + 2) == hand[i + 2].waarde)
+		{
+			// Is het een vierkaart?
+			if (i + 3 < hand.size() && 
+				hand[i].soort == hand[i + 3].soort && (hand[i].waarde + 3) == hand[i + 3].waarde)
+			{
+				// Of zelfs een vijfkaart.
+				if (i + 4 < hand.size() && 
+					hand[i].soort == hand[i + 4].soort && (hand[i].waarde + 4) == hand[i + 4].waarde)
+				{
+					roem += 100;
+					i += 4;
+					// Nog gekker, een echte zeskaart, hoeveel roem is dat?
+					if (i + 5 < hand.size() && (hand[i].waarde + 5) == hand[i + 5].waarde)
+					{
+						roem += 200;
+						i += 5;
+					}
+				}
+				else
+				{
+					roem += 50;
+					i += 3;
+				}
+			}
+			else
+			{
+				roem += 20;
+				i += 2;
+			}
+		}
+	}
+	return roem + vindVierkaart(hand);
 }

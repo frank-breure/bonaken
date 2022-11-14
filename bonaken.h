@@ -50,3 +50,19 @@ potje_t	Deel(void);
 
 void printHand(const kaarten_t & hand);
 void printPot(const potje_t & potje);
+
+/**
+ * @brief Vind roem met een vierkaart (vier dezelfde plaatjes)
+ * 
+ * @param hand 	Hand met gesorteerde kaarten.
+ * @return int	Roem in punten.
+ */
+int	vindVierkaart(const kaarten_t & hand);
+
+/**
+ * @brief Vind roem in een hand (zonder troef)
+ * 
+ * @param hand 	Hand met gesorteerde kaarten.
+ * @return int	Roem in punten.
+ */
+int	vindRoem(const kaarten_t & hand);

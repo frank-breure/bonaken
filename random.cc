@@ -19,10 +19,10 @@ void printRandoms(int lower, int upper, int count)
 	printf("\n");
 }
 
-std::vector<int>	random_unique(unsigned seed, int maximum, int count)
+intvector_t	random_unique(unsigned seed, int maximum, int count)
 {
-	std::vector<int>	allemaal;
-	std::vector<int>	numbers;
+	intvector_t	allemaal;
+	intvector_t	numbers;
 
 	srand(seed);
 

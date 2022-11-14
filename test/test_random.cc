@@ -19,29 +19,29 @@ static intvector_t	random_unique(int maximum, int count)
 
 TEST(RandomTest, DeeltAlles)
 {
-	std::vector<int>	een = random_unique(1, 1);
+	intvector_t	een = random_unique(1, 1);
 
 	ASSERT_EQ(1, een.size());
 	ASSERT_EQ(0, een[0]);
 
-	std::vector<int>	twee = random_unique(2, 2);
+	intvector_t	twee = random_unique(2, 2);
 
 	ASSERT_EQ(2, twee.size());
 	ASSERT_TRUE(0 == twee[0] || 1 == twee[0]);
 	ASSERT_TRUE(0 == twee[1] || 1 == twee[1]);
 	ASSERT_TRUE(twee[0] != twee[1]);
 
-	std::vector<int>	drie = random_unique(3, 3);
+	intvector_t	drie = random_unique(3, 3);
 	ASSERT_EQ(3, drie.size());
 	ASSERT_TRUE(0 == drie[0] || 1 == drie[0] || 2 == drie[0]);
 	ASSERT_TRUE(0 == drie[1] || 1 == drie[1] || 2 == drie[1]);
 	ASSERT_TRUE(0 == drie[2] || 1 == drie[2] || 2 == drie[2]);
 	ASSERT_TRUE(drie[0] != drie[1] && drie[1] != drie[2]);
 
-	const std::vector<int>	tweeendertig = random_unique(32, 32);
+	const intvector_t	tweeendertig = random_unique(32, 32);
 	ASSERT_EQ(32, tweeendertig.size());
 	int sum = 0;
-	for (std::vector<int>::const_iterator van = tweeendertig.begin(); van != tweeendertig.end(); van ++)
+	for (intvector_t::const_iterator van = tweeendertig.begin(); van != tweeendertig.end(); van ++)
 	{
 		int zoek = *van;
 
@@ -50,9 +50,9 @@ TEST(RandomTest, DeeltAlles)
 	}
 	ASSERT_EQ(16 * 31, sum);
 
-	const std::vector<int>	honderd = random_unique(100, 100);
+	const intvector_t	honderd = random_unique(100, 100);
 	sum = 0;
-	for (std::vector<int>::const_iterator van = honderd.begin(); van != honderd.end(); van ++)
+	for (intvector_t::const_iterator van = honderd.begin(); van != honderd.end(); van ++)
 	{
 		int zoek = *van;
 
