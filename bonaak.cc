@@ -1,4 +1,7 @@
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <ostream>
 
 #include "bonaken.h"
 
@@ -26,14 +29,15 @@ int main(int argc, const char * argv[])
 		{
 			unsigned seed;
 
-			if (sscanf(argv[i], "%x", &seed) == 1)
+			seed = strtoul(argv[i], NULL, 16);
+			if (seed != 0 || argv[i][0] == '0')
 			{
 				potje = Deel(seed);
 				printPot(potje);
 			}
 			else
 			{
-				fprintf(stderr, "Failed to parse hexadecimal seed: %s\n", argv[i]);
+				std::cerr << "Failed to parse hexadecimal seed: " << argv[i] << std::endl;
 			}
 		}
 	}

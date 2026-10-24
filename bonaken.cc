@@ -1,7 +1,8 @@
-#include <stdio.h>
-#include <time.h>
-
+#include <vector>
 #include <algorithm>
+#include <string>
+#include <sstream>
+#include <print>
 
 #include "bonaken.h"
 #include "random.h"
@@ -143,7 +144,7 @@ potje_t	Deel(unsigned seed)
 		clock_gettime(CLOCK_TAI, &tp);
 		seed = (unsigned) tp.tv_nsec;
 	}
-	printf("seed=%08x\n", seed);
+	std::print("seed={:08x}", seed);
 
 	intvector_t	geschud = random_unique(seed, 32, 32);
 
@@ -180,44 +181,44 @@ void printHand(const kaarten_t & hand)
 	std::sort(volgorde.begin(), volgorde.end());
 	for (auto kaart: volgorde)
 	{
-		printf("%s ", strKaart(kaart));
+		std::print("{} ", strKaart(kaart));
 		punten += Punten(kaart);
 	}
 	for (int i = 7 * hand.size(); i < 7 * 6; i ++)
 	{
-		putc(' ', stdout);
+		std::print(" ");
 	}
-	printf(" [%2d] ", punten);
+	std::print(" [{:2}] ", punten);
 	for (auto troef: Soorten())
 	{
-		printf("[%s %2d] ", strSoort(troef), TotaalTroefPunten(troef, hand));
+		std::print("[{} {:2d}] ", strSoort(troef), TotaalTroefPunten(troef, hand));
 	}
 	int roem = vindRoem(hand);
 	if (roem)
 	{
-		printf(" roem: %d", roem);
+		std::print(" roem: {:2d}", roem);
 	}
-	printf("\n");
+	std::println();
 }
 
 void printPot(const potje_t & potje)
 {
-	printf("\n");
-	printf("Noord: ");
+	std::println();
+	std::print("Noord: ");
 	printHand(potje.noord);
-	printf("Oost : ");
+	std::print("Oost : ");
 	printHand(potje.oost);
-	printf("Zuid : ");
+	std::print("Zuid : ");
 	printHand(potje.zuid);
-	printf("West : ");
+	std::print("West : ");
 	printHand(potje.west);
-	printf("Open : ");
+	std::print("Open : ");
 	printHand(potje.open);
-	printf("Dicht: ");
+	std::print("Dicht: ");
 	printHand(potje.dicht);
-	printf("Slaap: ");
+	std::print("Slaap: ");
 	printHand(potje.slapers);
-	printf("\n");
+	std::println();
 }
 
 inline bool sorteerOpWaarde(const kaart_t & lhs, const kaart_t & rhs) 
