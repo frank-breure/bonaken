@@ -1,15 +1,15 @@
 #include "random.h"
 
-#include <time.h>
+#include <ctime>
 #include <algorithm>
 
 #include <gtest/gtest.h>
 
-static unsigned getSeed(void)
+static unsigned getSeed()
 {
-	struct timespec tp;
+	timespec tp{};
 	clock_gettime(CLOCK_TAI, &tp);
-	return (unsigned) tp.tv_nsec;
+	return static_cast<unsigned>(tp.tv_nsec);
 }
 
 static intvector_t	random_unique(int maximum, int count)
@@ -41,7 +41,7 @@ TEST(RandomTest, DeeltAlles)
 	const intvector_t	tweeendertig = random_unique(32, 32);
 	ASSERT_EQ(32, tweeendertig.size());
 	int sum = 0;
-	for (intvector_t::const_iterator van = tweeendertig.begin(); van != tweeendertig.end(); van ++)
+	for (auto van = tweeendertig.begin(); van != tweeendertig.end(); ++ van)
 	{
 		int zoek = *van;
 
@@ -52,7 +52,7 @@ TEST(RandomTest, DeeltAlles)
 
 	const intvector_t	honderd = random_unique(100, 100);
 	sum = 0;
-	for (intvector_t::const_iterator van = honderd.begin(); van != honderd.end(); van ++)
+	for (auto van = honderd.begin(); van != honderd.end(); ++ van)
 	{
 		int zoek = *van;
 

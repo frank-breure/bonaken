@@ -29,7 +29,7 @@ int main(int argc, const char * argv[])
 		{
 			unsigned seed;
 
-			seed = strtoul(argv[i], NULL, 16);
+			seed = strtoul(argv[i], nullptr, 16);
 			if (seed != 0 || argv[i][0] == '0')
 			{
 				potje = Deel(seed);

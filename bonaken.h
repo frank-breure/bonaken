@@ -33,7 +33,7 @@ char const * strWaarde(waarde_e waarde);
 char const * strKaart(kaart_t kaart);
 
 typedef std::vector<kaart_t>	kaarten_t;
-kaarten_t Spel(void);
+kaarten_t Spel();
 
 typedef struct
 {

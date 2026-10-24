@@ -7,7 +7,7 @@
 #include "bonaken.h"
 #include "random.h"
 
-const std::vector<soort_e>	Soorten(void)
+const std::vector<soort_e>	Soorten()
 {
 	static std::vector<soort_e> soorten =
 	{
